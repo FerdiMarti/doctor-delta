@@ -12,7 +12,7 @@ const config: HardhatUserConfig = {
         hardhat: {
             chainId: 8453,
             forking: {
-                url: 'https://base-mainnet.g.alchemy.com/v2/' + process.env.ALCHEMY_API_KEY, // or Infura, etc.
+                url: 'https://arb-mainnet.g.alchemy.com/v2/' + process.env.ALCHEMY_API_KEY, // or Infura, etc.
                 enabled: true,
             },
             mining: {
