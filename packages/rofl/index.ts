@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import { fundingFeeAmountPerSizeKey } from './utils';
 import { datastoreAbi } from './abis/datastore.ts';
 import { doctorDeltaAbi } from './abis/doctor-delta.ts';
+import { eulerUtilsLensAbi } from './abis/UtilsLens.ts';
 
 dotenv.config();
 
@@ -12,9 +13,12 @@ interface OracleConfig {
     contractAddress: string;
     privateKey: string;
     gmxDataStoreAddress: string;
-    eulerLabsVaultAddress: string;
+    eulerWethVaultAddress: string;
+    eulerUsdcVaultAddress: string;
+    eulerUtilsLens: string;
     gmxMarket: string;
-    gmxCollateralToken: string;
+    wethToken: string;
+    usdcToken: string;
 }
 
 enum Strategy {
@@ -41,115 +45,68 @@ class BlockchainOracle {
         this.contract = new ethers.Contract(config.contractAddress, doctorDeltaAbi.abi, this.wallet);
     }
 
-    // /**
-    //  * Fetch APY and funding rates from Solidity contracts
-    //  */
-    // private async fetchWeb3Data(contractAddress: string, exchangeName: string): Promise<ExchangeData> {
-    //     try {
-    //         console.log(`Fetching data from ${exchangeName} contract: ${contractAddress}`);
-
-    //         // Generic contract ABI for fetching APY and funding rate
-    //         const contractAbi = ['function getAPY() external view returns (uint256)', 'function getFundingRate() external view returns (int256)'];
-
-    //         const exchangeContract = new ethers.Contract(contractAddress, contractAbi, this.provider);
-
-    //         // Fetch data from contract
-    //         const [apy, fundingRate] = await Promise.all([exchangeContract.getAPY(), exchangeContract.getFundingRate()]);
-
-    //         return {
-    //             name: exchangeName,
-    //             apy: parseFloat(ethers.formatEther(apy)),
-    //             fundingRate: parseFloat(ethers.formatEther(fundingRate)),
-    //         };
-    //     } catch (error) {
-    //         console.error(`Error fetching data from ${exchangeName} contract:`, error);
-    //         throw new Error(`Failed to fetch data from ${exchangeName} contract: ${error}`);
-    //     }
-    // }
-
     private async fetchGmxFundingRate() {
         const dataStore = new ethers.Contract(datastoreAbi.address, datastoreAbi.abi, this.provider);
-        const key = fundingFeeAmountPerSizeKey(this.config.gmxMarket, this.config.gmxCollateralToken, true);
+        const key = fundingFeeAmountPerSizeKey(this.config.gmxMarket, this.config.wethToken, true);
         const fundingFeeAmountPerSize = await dataStore.getUint(key);
 
         return fundingFeeAmountPerSize;
     }
 
+    private async fetchEulerApys() {
+        const eulerUtilsLens = new ethers.Contract(this.config.eulerUtilsLens, eulerUtilsLensAbi, this.provider);
+        const wethApys = await eulerUtilsLens.getAPYs(this.config.eulerWethVaultAddress);
+        const usdcApys = await eulerUtilsLens.getAPYs(this.config.eulerUsdcVaultAddress);
+
+        return {
+            supplyAPY: usdcApys.supplyAPY,
+            borrowAPY: wethApys.borrowAPY,
+        };
+    }
+
     /**
      * Compare the data from two exchanges and make a decision
      */
-    // private analyzeData(exchange1: ExchangeData, exchange2: ExchangeData): Strategy {
-    //     const apyDiff = exchange1.apy - exchange2.apy;
-    //     const fundingRateDiff = exchange1.fundingRate - exchange2.fundingRate;
+    private analyzeData(supplyAPY: bigint, borrowAPY: bigint, fundingRate: bigint): Strategy {
+        const apyDiff = supplyAPY - borrowAPY;
 
-    //     console.log(`\nAnalyzing data:`);
-    //     console.log(`${exchange1.name} - APY: ${exchange1.apy}%, Funding Rate: ${exchange1.fundingRate}%`);
-    //     console.log(`${exchange2.name} - APY: ${exchange2.apy}%, Funding Rate: ${exchange2.fundingRate}%`);
-    //     console.log(`APY Difference: ${apyDiff}%`);
-    //     console.log(`Funding Rate Difference: ${fundingRateDiff}%`);
+        console.log(`\nAnalyzing data:`);
+        console.log(`APY diff: ${apyDiff / 10n ** 25n}%`);
 
-    //     // Decision logic (customize based on your strategy)
-    //     if (apyDiff > 2.0 && fundingRateDiff < -0.5) {
-    //         action = 'buy';
-    //         reason = `${exchange1.name} offers significantly higher APY (${apyDiff}%) with lower funding costs`;
-    //     } else if (apyDiff < -2.0 && fundingRateDiff > 0.5) {
-    //         action = 'sell';
-    //         reason = `${exchange2.name} offers significantly higher APY with ${exchange1.name} having higher funding costs`;
-    //     } else if (Math.abs(apyDiff) > 1.5) {
-    //         action = Math.abs(apyDiff) > 3.0 ? 'buy' : 'hold';
-    //         reason = `Moderate APY difference (${apyDiff}%) detected`;
-    //     } else {
-    //         action = 'hold';
-    //         reason = 'No significant arbitrage opportunity detected';
-    //     }
+        // // Decision logic (customize based on your strategy)
+        // if (apyDiff > 2.0 && fundingRateDiff < -0.5) {
+        //     action = 'buy';
+        //     reason = `${exchange1.name} offers significantly higher APY (${apyDiff}%) with lower funding costs`;
+        // } else if (apyDiff < -2.0 && fundingRateDiff > 0.5) {
+        //     action = 'sell';
+        //     reason = `${exchange2.name} offers significantly higher APY with ${exchange1.name} having higher funding costs`;
+        // } else if (Math.abs(apyDiff) > 1.5) {
+        //     action = Math.abs(apyDiff) > 3.0 ? 'buy' : 'hold';
+        //     reason = `Moderate APY difference (${apyDiff}%) detected`;
+        // } else {
+        //     action = 'hold';
+        //     reason = 'No significant arbitrage opportunity detected';
+        // }
 
-    //     return {
-    //         action,
-    //         reason,
-    //         data: {
-    //             exchange1,
-    //             exchange2,
-    //             apyDiff,
-    //             fundingRateDiff,
-    //         },
-    //     };
-    // }
+        return Strategy.SUPPLY;
+    }
 
     /**
      * Execute the smart contract function based on the decision
      */
-    private async executeContractAction(action: 'buy' | 'sell' | 'hold', data: any): Promise<ethers.ContractTransactionResponse | null> {
+    private async executeContractAction(action: Strategy): Promise<ethers.ContractTransactionResponse | null> {
         try {
             console.log(`\nExecuting action: ${action}`);
 
             let transaction: ethers.ContractTransactionResponse;
 
             switch (action) {
-                case 'buy':
-                    // Call the buy function in your smart contract
-                    // Adjust function name and parameters based on your contract
-                    transaction = await this.contract.executeBuyStrategy(
-                        ethers.parseEther(data.apyDiff.toString()),
-                        ethers.parseEther(data.fundingRateDiff.toString()),
-                    );
+                case Strategy.SUPPLY:
+                    transaction = await this.contract.executeSupplyStrategy();
                     break;
 
-                case 'sell':
-                    // Call the sell function in your smart contract
-                    transaction = await this.contract.executeSellStrategy(
-                        ethers.parseEther(data.apyDiff.toString()),
-                        ethers.parseEther(data.fundingRateDiff.toString()),
-                    );
-                    break;
-
-                case 'hold':
-                    // Call the hold/update function in your smart contract
-                    transaction = await this.contract.updatePriceData(
-                        ethers.parseEther(data.exchange1.apy.toString()),
-                        ethers.parseEther(data.exchange2.apy.toString()),
-                        ethers.parseEther(data.exchange1.fundingRate.toString()),
-                        ethers.parseEther(data.exchange2.fundingRate.toString()),
-                    );
+                case Strategy.SUPPLY_BORROW_HEDGE:
+                    transaction = await this.contract.executeSupplyStrategy();
                     break;
 
                 default:
@@ -178,22 +135,25 @@ class BlockchainOracle {
             console.log(`\n=== Oracle Run - ${new Date().toISOString()} ===`);
 
             // Fetch data from both exchanges
-            const fundingRate = await this.fetchGmxFundingRate();
+            const [fundingRate, apys] = await Promise.all([this.fetchGmxFundingRate(), this.fetchEulerApys()]);
+
             console.log(`Funding rate: ${fundingRate}`);
-            // Analyze the data and determine action
-            // const analysis = this.analyzeData(web2Data, web3Data);
+            console.log(`USDC/WETH Lend APY: ${apys.supplyAPY}`);
+            console.log(`WETH/USDC Borrow APY: ${apys.borrowAPY}`);
 
-            // console.log(`\nDecision: ${analysis.action.toUpperCase()}`);
-            // console.log(`Reason: ${analysis.reason}`);
+            //Analyze the data and determine action
+            const action = this.analyzeData(apys.supplyAPY, apys.borrowAPY, fundingRate);
 
-            // // Execute the action on the smart contract
-            // const transaction = await this.executeContractAction(analysis.action, analysis.data);
+            console.log(`\nDecision: ${action.toUpperCase()}`);
 
-            // if (transaction) {
-            //     console.log(`✅ Oracle run completed successfully`);
-            // } else {
-            //     console.log(`ℹ️  Oracle run completed - no transaction required`);
-            // }
+            // Execute the action on the smart contract
+            const transaction = await this.executeContractAction(action);
+
+            if (transaction) {
+                console.log(`✅ Oracle run completed successfully`);
+            } else {
+                console.log(`ℹ️  Oracle run completed - no transaction required`);
+            }
         } catch (error) {
             console.error('❌ Oracle run failed:', error);
             throw error;
@@ -226,10 +186,12 @@ const oracleConfig: OracleConfig = {
     contractAddress: doctorDeltaAbi.address,
     privateKey: process.env.PRIVATE_KEY || '',
     gmxDataStoreAddress: datastoreAbi.address,
-    eulerLabsVaultAddress: process.env.EULER_LABS_VAULT_ADDRESS || '',
-    gmxMarket: '0x70d95587d40A2caf56bd97485aB3Eec10Bee6336',
-    gmxCollateralToken: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
-    //gmxUsdcToken: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    eulerWethVaultAddress: '0x78E3E051D32157AACD550fBB78458762d8f7edFF', //WETH
+    eulerUsdcVaultAddress: '0x0a1eCC5Fe8C9be3C809844fcBe615B46A869b899', //USDC
+    eulerUtilsLens: '0x2a99a89d820D50b4Ec947679A2d55Dc39600FdB5',
+    gmxMarket: '0x70d95587d40A2caf56bd97485aB3Eec10Bee6336', //WETH/USDC
+    wethToken: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', //WETH
+    usdcToken: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 };
 
 // Validate configuration
