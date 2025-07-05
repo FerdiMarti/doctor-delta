@@ -127,6 +127,23 @@ export default function Component() {
 
                 <ArrowDown className="w-4 h-4 text-black" />
 
+                {/* Oracle Step - Lateral to main flow */}
+                <div className="flex items-center gap-8 w-full justify-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-32 h-32 flex items-center justify-center mb-1">
+                      <img src="/oracle-penguin.png" alt="Oracle Penguin" className="w-32 h-32 object-contain" />
+                    </div>
+                    <p className="text-xs font-semibold text-gray-900 text-center">Oracle gathers data</p>
+                    <p className="text-xs text-gray-600">triggers strategy</p>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    
+                    
+                    
+                  </div>
+                </div>
+
                 {/* Step 1: Euler Finance */}
                 <div className="flex items-center gap-3 w-full justify-center">
                   <div className="flex flex-col items-center">
