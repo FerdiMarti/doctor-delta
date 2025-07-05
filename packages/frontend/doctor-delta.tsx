@@ -101,8 +101,6 @@ export default function Component() {
                     </div>
                     <span className="text-sm font-bold text-blue-600">15.8%</span>
                   </div>
-
-                  
                 </div>
               </div>
             </CardContent>
@@ -114,13 +112,31 @@ export default function Component() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Vault Strategy Overview</h2>
 
               <div className="flex flex-col items-center space-y-6">
+                {/* Step 0: User Deposits into Vault */}
+                <div className="flex flex-col items-center">
+                  <div className="w-32 h-32 flex items-center justify-center mb-2">
+                    <img
+                      src="/penguin-deposit.png"
+                      alt="Penguin Depositing USDC"
+                      className="w-24 h-24 object-contain"
+                    />
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900">You deposit USDC</p>
+                  <p className="text-xs text-gray-600">into Doctor Delta Vault</p>
+                </div>
+
+                <ArrowDown className="w-6 h-6 text-black" />
+
                 {/* Step 1: Euler Finance */}
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
                     <div className="w-16 h-16 flex items-center justify-center mb-2">
                       <img src="/euler-finance-logo.png" alt="Euler Finance" className="w-12 h-12 object-contain" />
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Deposit USDC on Euler </p>
+                    <p className="text-sm font-semibold text-gray-900">Deposit USDC on Euler</p>
+                    <div className="mt-1 px-2 py-1 bg-green-100 rounded-full">
+                      <span className="text-xs font-bold text-green-700">+8.5% APY</span>
+                    </div>
                   </div>
 
                   <ArrowRight className="w-6 h-6 text-black" />
@@ -133,22 +149,26 @@ export default function Component() {
                       </div>
                     </div>
                     <p className="text-sm font-semibold text-gray-900">Borrow WETH against USDC</p>
+                    <div className="mt-1 px-2 py-1 bg-red-100 rounded-full">
+                      <span className="text-xs font-bold text-red-700">-2.2% APY</span>
+                    </div>
                   </div>
                 </div>
 
                 <ArrowDown className="w-6 h-6 text-black" />
 
-                {/* Step 2: Shorts ETH */}
+                {/* Step 2: GMX */}
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
                     <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-2 relative border border-gray-200">
                       <img src="/gmx-logo.png" alt="GMX" className="w-10 h-10 object-contain" />
                       <div className="w-4 h-4 bg-orange-400 rounded-full absolute -bottom-1 -right-1"></div>
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Long ETH to collect funding </p>
+                    <p className="text-sm font-semibold text-gray-900">Long ETH to collect funding</p>
+                    <div className="mt-1 px-2 py-1 bg-blue-100 rounded-full">
+                      <span className="text-xs font-bold text-blue-700">+15.8% APY</span>
+                    </div>
                   </div>
-
-                  <div className="flex flex-col items-center"></div>
                 </div>
 
                 <ArrowDown className="w-6 h-6 text-black" />
@@ -159,6 +179,9 @@ export default function Component() {
                     <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-32 h-32 object-contain" />
                   </div>
                   <p className="text-lg font-bold text-gray-900">Earn dual-yield all delta-neutral</p>
+                  <div className="mt-2 px-4 py-2 bg-green-200 rounded-lg">
+                    <span className="text-sm font-bold text-green-800">+13.45% Net APY</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
