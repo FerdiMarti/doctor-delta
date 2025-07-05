@@ -1,15 +1,33 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, ArrowDown, DollarSign } from "lucide-react"
+import Link from "next/link"
 
 export default function Component() {
   return (
     <div className="min-h-screen p-6 bg-[rgba(248,241,230,1)]">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <img src="/doctor-delta-logo.png" alt="Doctor Delta Logo" className="w-20 h-20 object-contain" />
-          <h1 className="text-4xl font-bold text-gray-900">Doctor Delta</h1>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <img src="/doctor-delta-logo.png" alt="Doctor Delta Logo" className="w-20 h-20 object-contain" />
+            <h1 className="text-4xl font-bold text-gray-900">Doctor Delta</h1>
+          </div>
+
+          <nav className="flex items-center gap-8">
+            <Link
+              href="/portfolio"
+              className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              Portfolio
+            </Link>
+            <Link
+              href="/strategy-simulation"
+              className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              Strategy Simulation
+            </Link>
+          </nav>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -55,13 +73,45 @@ export default function Component() {
                   "Delta-neutral strategy: no directional ETH exposure - rebalances automatically when supply & borrow / funding rates change. Set & forget!"
                 }
               </p>
+
+              {/* Current Strategy Rates */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Strategy Rates</h3>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <img src="/euler-finance-logo.png" alt="Euler" className="w-5 h-5 object-contain" />
+                      <span className="text-sm font-medium text-gray-700">USDC Supply APY</span>
+                    </div>
+                    <span className="text-sm font-bold text-green-600">8.5%</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <img src="/euler-finance-logo.png" alt="Euler" className="w-5 h-5 object-contain" />
+                      <span className="text-sm font-medium text-gray-700">WETH Borrow APY</span>
+                    </div>
+                    <span className="text-sm font-bold text-red-600">12.2%</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <img src="/gmx-logo.png" alt="GMX" className="w-5 h-5 object-contain" />
+                      <span className="text-sm font-medium text-gray-700">ETH Funding Rate</span>
+                    </div>
+                    <span className="text-sm font-bold text-blue-600">15.8%</span>
+                  </div>
+
+                  
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           {/* Vault Simulation Section */}
           <Card className="p-6">
             <CardContent className="p-0">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Strategy Simulation</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Vault Strategy Overview</h2>
 
               <div className="flex flex-col items-center space-y-6">
                 {/* Step 1: Euler Finance */}
@@ -105,8 +155,8 @@ export default function Component() {
 
                 {/* Step 3: Result */}
                 <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 flex items-center justify-center mb-2">
-                    <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-16 h-16 object-contain" />
+                  <div className="w-32 h-32 flex items-center justify-center mb-2">
+                    <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-32 h-32 object-contain" />
                   </div>
                   <p className="text-lg font-bold text-gray-900">Earn dual-yield all delta-neutral</p>
                 </div>
