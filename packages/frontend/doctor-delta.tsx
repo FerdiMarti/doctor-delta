@@ -1,20 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowRight, ArrowDown, DollarSign, TrendingUp, RotateCcw } from "lucide-react"
+import { ArrowRight, ArrowDown, DollarSign } from "lucide-react"
 
 export default function Component() {
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6 bg-[rgba(248,241,230,1)]">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center border-2 border-gray-200">
-            <div className="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-slate-700 rounded-full"></div>
-              </div>
-            </div>
-          </div>
+          <img src="/doctor-delta-logo.png" alt="Doctor Delta Logo" className="w-20 h-20 object-contain" />
           <h1 className="text-4xl font-bold text-gray-900">Doctor Delta</h1>
         </div>
 
@@ -27,11 +21,11 @@ export default function Component() {
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Value Locked</p>
-                  <p className="text-2xl font-bold text-gray-900">$ 1,234,567</p>
+                  <p className="text-2xl font-bold text-gray-900">$ 4,200,069</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Estimated APY</p>
-                  <p className="text-2xl font-bold text-gray-900">8,2% est.</p>
+                  <p className="text-2xl font-bold text-gray-900">24,2% est.</p>
                 </div>
               </div>
 
@@ -57,7 +51,9 @@ export default function Component() {
 
               {/* Description */}
               <p className="text-sm text-gray-600 leading-relaxed">
-                Delta-neutral strategy: no directional ETH exposure - Rebalances every 30 days or if volatility s-
+                {
+                  "Delta-neutral strategy: no directional ETH exposure - rebalances automatically when supply & borrow / funding rates change. Set & forget!"
+                }
               </p>
             </CardContent>
           </Card>
@@ -65,21 +61,19 @@ export default function Component() {
           {/* Vault Simulation Section */}
           <Card className="p-6">
             <CardContent className="p-0">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Vault Simulation</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Strategy Simulation</h2>
 
               <div className="flex flex-col items-center space-y-6">
                 {/* Step 1: Euler Finance */}
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-2">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        <DollarSign className="w-6 h-6 text-blue-500" />
-                      </div>
+                    <div className="w-16 h-16 flex items-center justify-center mb-2">
+                      <img src="/euler-finance-logo.png" alt="Euler Finance" className="w-12 h-12 object-contain" />
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Euler Finance</p>
+                    <p className="text-sm font-semibold text-gray-900">Deposit USDC on Euler </p>
                   </div>
 
-                  <ArrowRight className="w-6 h-6 text-gray-400" />
+                  <ArrowRight className="w-6 h-6 text-black" />
 
                   <div className="flex flex-col items-center">
                     <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mb-2 relative">
@@ -88,42 +82,33 @@ export default function Component() {
                         <div className="w-3 h-3 bg-white transform rotate-45"></div>
                       </div>
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Borrow ETH</p>
+                    <p className="text-sm font-semibold text-gray-900">Borrow WETH against USDC</p>
                   </div>
                 </div>
 
-                <ArrowDown className="w-6 h-6 text-gray-400" />
+                <ArrowDown className="w-6 h-6 text-black" />
 
                 {/* Step 2: Shorts ETH */}
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center mb-2 relative">
-                      <TrendingUp className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-2 relative border border-gray-200">
+                      <img src="/gmx-logo.png" alt="GMX" className="w-10 h-10 object-contain" />
                       <div className="w-4 h-4 bg-orange-400 rounded-full absolute -bottom-1 -right-1"></div>
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Shorts ETH</p>
-                    <p className="text-xs text-gray-600">on GMX</p>
+                    <p className="text-sm font-semibold text-gray-900">Long ETH to collect funding </p>
                   </div>
 
-                  <div className="flex flex-col items-center">
-                    <div className="w-24 h-12 border-2 border-gray-400 rounded-full flex items-center justify-center relative">
-                      <RotateCcw className="w-5 h-5 text-gray-600" />
-                      <div className="absolute -top-2 -right-2 text-xs text-gray-600">Rebalances</div>
-                      <div className="absolute -bottom-2 -right-2 text-xs text-gray-600">every 30d</div>
-                    </div>
-                  </div>
+                  <div className="flex flex-col items-center"></div>
                 </div>
 
-                <ArrowDown className="w-6 h-6 text-gray-400" />
+                <ArrowDown className="w-6 h-6 text-black" />
 
                 {/* Step 3: Result */}
                 <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-2">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-slate-700 rounded-full"></div>
-                    </div>
+                  <div className="w-16 h-16 flex items-center justify-center mb-2">
+                    <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-16 h-16 object-contain" />
                   </div>
-                  <p className="text-lg font-bold text-gray-900">All delta-neutral!!</p>
+                  <p className="text-lg font-bold text-gray-900">Earn dual-yield all delta-neutral</p>
                 </div>
               </div>
             </CardContent>
