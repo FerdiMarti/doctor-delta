@@ -10,11 +10,12 @@ export default function StrategySimulation() {
   const [wethBorrowAPY, setWethBorrowAPY] = useState(12.2)
   const [ethFundingRate, setEthFundingRate] = useState(15.8)
 
-  // Calculate if strategy is profitable
-  const totalYield = usdcSupplyAPY + ethFundingRate
-  const borrowCost = wethBorrowAPY
-  const netAPY = totalYield - borrowCost
-  const isProfitable = netAPY > 0
+  // Calculate if strategy is profitable with proper leverage
+  const supplyYield = 1.0 * usdcSupplyAPY // 100% of deposit earns supply yield
+  const borrowCost = 0.5 * wethBorrowAPY // Only 50% is borrowed due to collateral requirements
+  const fundingYield = 0.5 * ethFundingRate // 50% position size for funding
+  const netAPY = supplyYield + fundingYield - borrowCost
+  const isProfitable = netAPY > usdcSupplyAPY // Strategy must beat simple USDC supply
 
   return (
     <div className="min-h-screen p-6 bg-[rgba(248,241,230,1)]">
@@ -152,16 +153,16 @@ export default function StrategySimulation() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">USDC Supply Yield:</span>
-                  <span className="font-semibold text-green-600">+{usdcSupplyAPY.toFixed(1)}%</span>
+                  <span className="text-gray-600">USDC Supply Yield (1.0x):</span>
+                  <span className="font-semibold text-green-600">+{(1.0 * usdcSupplyAPY).toFixed(1)}%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">ETH Funding Rate:</span>
-                  <span className="font-semibold text-blue-600">+{ethFundingRate.toFixed(1)}%</span>
+                  <span className="text-gray-600">ETH Funding Rate (0.5x):</span>
+                  <span className="font-semibold text-blue-600">+{(0.5 * ethFundingRate).toFixed(1)}%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">WETH Borrow Cost:</span>
-                  <span className="font-semibold text-red-600">-{wethBorrowAPY.toFixed(1)}%</span>
+                  <span className="text-gray-600">WETH Borrow Cost (0.5x):</span>
+                  <span className="font-semibold text-red-600">-{(0.5 * wethBorrowAPY).toFixed(1)}%</span>
                 </div>
                 <hr className="border-gray-200" />
                 <div className="flex justify-between items-center text-lg font-bold">
