@@ -68,8 +68,8 @@ export default function Portfolio() {
               <CardTitle>Active Positions</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-gray-900">2</p>
-              <p className="text-sm text-gray-600 mt-1">Delta-neutral strategies</p>
+              <p className="text-3xl font-bold text-gray-900">1</p>
+              <p className="text-sm text-gray-600 mt-1">Delta-neutral strategy</p>
             </CardContent>
           </Card>
         </div>
@@ -92,20 +92,6 @@ export default function Portfolio() {
                 <div className="text-right">
                   <p className="font-semibold">$8,200.34</p>
                   <p className="text-sm text-green-600">+$156.78 (1.95%)</p>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-4">
-                  <img src="/doctor-delta-logo.png" alt="Doctor Delta" className="w-10 h-10" />
-                  <div>
-                    <h3 className="font-semibold">Delta Neutral Vault #2</h3>
-                    <p className="text-sm text-gray-600">USDC → Euler Finance → GMX</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold">$4,250.33</p>
-                  <p className="text-sm text-green-600">+$77.78 (1.86%)</p>
                 </div>
               </div>
             </div>

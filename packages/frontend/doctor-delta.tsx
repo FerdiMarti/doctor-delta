@@ -91,7 +91,7 @@ export default function Component() {
                       <img src="/euler-finance-logo.png" alt="Euler" className="w-5 h-5 object-contain" />
                       <span className="text-sm font-medium text-gray-700">WETH Borrow APY</span>
                     </div>
-                    <span className="text-sm font-bold text-red-600">12.2%</span>
+                    <span className="text-sm font-bold text-red-600">2.2%</span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
@@ -111,75 +111,73 @@ export default function Component() {
             <CardContent className="p-0">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Vault Strategy Overview</h2>
 
-              <div className="flex flex-col items-center space-y-6">
+              <div className="flex flex-col items-center space-y-3">
                 {/* Step 0: User Deposits into Vault */}
                 <div className="flex flex-col items-center">
-                  <div className="w-32 h-32 flex items-center justify-center mb-2">
+                  <div className="w-32 h-32 flex items-center justify-center mb-1">
                     <img
                       src="/penguin-deposit.png"
                       alt="Penguin Depositing USDC"
                       className="w-24 h-24 object-contain"
                     />
                   </div>
-                  <p className="text-sm font-semibold text-gray-900">You deposit USDC</p>
+                  <p className="text-sm font-semibold text-gray-900 text-center">You deposit USDC</p>
                   <p className="text-xs text-gray-600">into Doctor Delta Vault</p>
                 </div>
 
-                <ArrowDown className="w-6 h-6 text-black" />
+                <ArrowDown className="w-4 h-4 text-black" />
 
                 {/* Step 1: Euler Finance */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 w-full justify-center">
                   <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 flex items-center justify-center mb-2">
+                    <div className="w-16 h-16 flex items-center justify-center mb-1">
                       <img src="/euler-finance-logo.png" alt="Euler Finance" className="w-12 h-12 object-contain" />
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Deposit USDC on Euler</p>
-                    <div className="mt-1 px-2 py-1 bg-green-100 rounded-full">
+                    <p className="text-xs font-semibold text-gray-900 text-center">Deposit USDC on Euler</p>
+                    <div className="mt-1 px-2 py-0.5 bg-green-100 rounded-full">
                       <span className="text-xs font-bold text-green-700">+8.5% APY</span>
                     </div>
                   </div>
 
-                  <ArrowRight className="w-6 h-6 text-black" />
+                  <ArrowRight className="w-4 h-4 text-black" />
 
                   <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mb-2 relative">
+                    <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mb-1 relative">
                       <div className="w-8 h-8 bg-blue-400 rounded"></div>
                       <div className="w-6 h-6 bg-orange-400 rounded-full absolute -top-1 -right-1 flex items-center justify-center">
                         <div className="w-3 h-3 bg-white transform rotate-45"></div>
                       </div>
                     </div>
-                    <p className="text-sm font-semibold text-gray-900">Borrow WETH against USDC</p>
-                    <div className="mt-1 px-2 py-1 bg-red-100 rounded-full">
+                    <p className="text-xs font-semibold text-gray-900 text-center">Borrow WETH against USDC</p>
+                    <div className="mt-1 px-2 py-0.5 bg-red-100 rounded-full">
                       <span className="text-xs font-bold text-red-700">-2.2% APY</span>
                     </div>
                   </div>
                 </div>
 
-                <ArrowDown className="w-6 h-6 text-black" />
+                <ArrowDown className="w-4 h-4 text-black" />
 
                 {/* Step 2: GMX */}
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-2 relative border border-gray-200">
-                      <img src="/gmx-logo.png" alt="GMX" className="w-10 h-10 object-contain" />
-                      <div className="w-4 h-4 bg-orange-400 rounded-full absolute -bottom-1 -right-1"></div>
-                    </div>
-                    <p className="text-sm font-semibold text-gray-900">Long ETH to collect funding</p>
-                    <div className="mt-1 px-2 py-1 bg-blue-100 rounded-full">
-                      <span className="text-xs font-bold text-blue-700">+15.8% APY</span>
-                    </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-1 relative border border-gray-200">
+                    <img src="/gmx-logo.png" alt="GMX" className="w-10 h-10 object-contain" />
+                    <div className="w-4 h-4 bg-orange-400 rounded-full absolute -bottom-1 -right-1"></div>
+                  </div>
+                  <p className="text-xs font-semibold text-gray-900 text-center">Long ETH to collect funding</p>
+                  <div className="mt-1 px-2 py-0.5 bg-blue-100 rounded-full">
+                    <span className="text-xs font-bold text-blue-700">+15.8% APY</span>
                   </div>
                 </div>
 
-                <ArrowDown className="w-6 h-6 text-black" />
+                <ArrowDown className="w-4 h-4 text-black" />
 
                 {/* Step 3: Result */}
                 <div className="flex flex-col items-center">
-                  <div className="w-32 h-32 flex items-center justify-center mb-2">
+                  <div className="w-32 h-32 flex items-center justify-center mb-1">
                     <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-32 h-32 object-contain" />
                   </div>
-                  <p className="text-lg font-bold text-gray-900">Earn dual-yield all delta-neutral</p>
-                  <div className="mt-2 px-4 py-2 bg-green-200 rounded-lg">
+                  <p className="text-sm font-bold text-gray-900 text-center">Earn dual-yield all delta-neutral</p>
+                  <div className="mt-2 px-3 py-1 bg-green-200 rounded-lg">
                     <span className="text-sm font-bold text-green-800">+13.45% Net APY</span>
                   </div>
                 </div>

@@ -3,17 +3,16 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Slider } from "@/components/ui/slider"
 import { ArrowLeft } from "lucide-react"
 
 export default function StrategySimulation() {
-  const [usdcSupplyAPY, setUsdcSupplyAPY] = useState([8.5])
-  const [wethBorrowAPY, setWethBorrowAPY] = useState([12.2])
-  const [ethFundingRate, setEthFundingRate] = useState([15.8])
+  const [usdcSupplyAPY, setUsdcSupplyAPY] = useState(8.5)
+  const [wethBorrowAPY, setWethBorrowAPY] = useState(12.2)
+  const [ethFundingRate, setEthFundingRate] = useState(15.8)
 
   // Calculate if strategy is profitable
-  const totalYield = usdcSupplyAPY[0] + ethFundingRate[0]
-  const borrowCost = wethBorrowAPY[0]
+  const totalYield = usdcSupplyAPY + ethFundingRate
+  const borrowCost = wethBorrowAPY
   const netAPY = totalYield - borrowCost
   const isProfitable = netAPY > 0
 
@@ -68,17 +67,18 @@ export default function StrategySimulation() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">0%</span>
-                    <span className="text-2xl font-bold text-green-600">{usdcSupplyAPY[0].toFixed(1)}%</span>
-                    <span className="text-sm text-gray-600">20%</span>
+                    <span className="text-sm text-gray-600">-30%</span>
+                    <span className="text-2xl font-bold text-green-600">{usdcSupplyAPY.toFixed(1)}%</span>
+                    <span className="text-sm text-gray-600">30%</span>
                   </div>
-                  <Slider
+                  <input
+                    type="range"
+                    min="-30"
+                    max="30"
+                    step="0.1"
                     value={usdcSupplyAPY}
-                    onValueChange={setUsdcSupplyAPY}
-                    max={20}
-                    min={0}
-                    step={0.1}
-                    className="w-full"
+                    onChange={(e) => setUsdcSupplyAPY(Number.parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                   />
                 </div>
               </CardContent>
@@ -95,17 +95,18 @@ export default function StrategySimulation() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">0%</span>
-                    <span className="text-2xl font-bold text-red-600">{wethBorrowAPY[0].toFixed(1)}%</span>
-                    <span className="text-sm text-gray-600">25%</span>
+                    <span className="text-sm text-gray-600">-30%</span>
+                    <span className="text-2xl font-bold text-red-600">{wethBorrowAPY.toFixed(1)}%</span>
+                    <span className="text-sm text-gray-600">30%</span>
                   </div>
-                  <Slider
+                  <input
+                    type="range"
+                    min="-30"
+                    max="30"
+                    step="0.1"
                     value={wethBorrowAPY}
-                    onValueChange={setWethBorrowAPY}
-                    max={25}
-                    min={0}
-                    step={0.1}
-                    className="w-full"
+                    onChange={(e) => setWethBorrowAPY(Number.parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                   />
                 </div>
               </CardContent>
@@ -122,17 +123,18 @@ export default function StrategySimulation() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">-10%</span>
-                    <span className="text-2xl font-bold text-blue-600">{ethFundingRate[0].toFixed(1)}%</span>
+                    <span className="text-sm text-gray-600">-30%</span>
+                    <span className="text-2xl font-bold text-blue-600">{ethFundingRate.toFixed(1)}%</span>
                     <span className="text-sm text-gray-600">30%</span>
                   </div>
-                  <Slider
+                  <input
+                    type="range"
+                    min="-30"
+                    max="30"
+                    step="0.1"
                     value={ethFundingRate}
-                    onValueChange={setEthFundingRate}
-                    max={30}
-                    min={-10}
-                    step={0.1}
-                    className="w-full"
+                    onChange={(e) => setEthFundingRate(Number.parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                   />
                 </div>
               </CardContent>
@@ -151,15 +153,15 @@ export default function StrategySimulation() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">USDC Supply Yield:</span>
-                  <span className="font-semibold text-green-600">+{usdcSupplyAPY[0].toFixed(1)}%</span>
+                  <span className="font-semibold text-green-600">+{usdcSupplyAPY.toFixed(1)}%</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">ETH Funding Rate:</span>
-                  <span className="font-semibold text-blue-600">+{ethFundingRate[0].toFixed(1)}%</span>
+                  <span className="font-semibold text-blue-600">+{ethFundingRate.toFixed(1)}%</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">WETH Borrow Cost:</span>
-                  <span className="font-semibold text-red-600">-{wethBorrowAPY[0].toFixed(1)}%</span>
+                  <span className="font-semibold text-red-600">-{wethBorrowAPY.toFixed(1)}%</span>
                 </div>
                 <hr className="border-gray-200" />
                 <div className="flex justify-between items-center text-lg font-bold">
@@ -235,6 +237,29 @@ export default function StrategySimulation() {
             </Card>
           </div>
         </div>
+
+        <style jsx>{`
+          .slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          }
+
+          .slider::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          }
+        `}</style>
       </div>
     </div>
   )
