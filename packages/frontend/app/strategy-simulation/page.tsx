@@ -231,7 +231,7 @@ export default function StrategySimulation() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Rebalancing:</span>
-                    <span className="font-semibold text-gray-600">Every 30 days</span>
+                    <span className="font-semibold text-gray-600">Dynamic</span>
                   </div>
                 </div>
               </CardContent>

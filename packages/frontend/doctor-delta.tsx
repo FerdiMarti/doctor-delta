@@ -109,48 +109,44 @@ export default function Component() {
           {/* Vault Simulation Section */}
           <Card className="p-6">
             <CardContent className="p-0">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Vault Strategy Overview</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Doctor Delta Overview</h2>
 
-              <div className="flex flex-col items-center space-y-3">
+              <div className="flex flex-col items-center space-y-2">
                 {/* Step 0: User Deposits into Vault */}
                 <div className="flex flex-col items-center">
-                  <div className="w-32 h-32 flex items-center justify-center mb-1">
+                  <div className="w-24 h-24 flex items-center justify-center mb-1">
                     <img
                       src="/penguin-deposit.png"
                       alt="Penguin Depositing USDC"
-                      className="w-24 h-24 object-contain"
+                      className="w-20 h-20 object-contain"
                     />
                   </div>
-                  <p className="text-sm font-semibold text-gray-900 text-center">You deposit USDC</p>
-                  <p className="text-xs text-gray-600">into Doctor Delta Vault</p>
+                  <p className="text-sm font-semibold text-gray-900 text-center mb-0">You deposit USDC</p>
+                  <p className="text-xs text-gray-600 mb-0">into Doctor Delta Vault</p>
                 </div>
 
-                <ArrowDown className="w-4 h-4 text-black" />
+                <ArrowDown className="w-3 h-3 text-black" />
 
                 {/* Oracle Step - Lateral to main flow */}
-                <div className="flex items-center gap-8 w-full justify-center">
+                <div className="flex items-center gap-4 w-full justify-center">
                   <div className="flex flex-col items-center">
-                    <div className="w-32 h-32 flex items-center justify-center mb-1">
-                      <img src="/oracle-penguin.png" alt="Oracle Penguin" className="w-32 h-32 object-contain" />
+                    <div className="w-24 h-24 flex items-center justify-center mb-1">
+                      <img src="/oracle-penguin.png" alt="Oracle Penguin" className="w-24 h-24 object-contain" />
                     </div>
-                    <p className="text-xs font-semibold text-gray-900 text-center">Oracle gathers data</p>
-                    <p className="text-xs text-gray-600">triggers strategy</p>
+                    <p className="text-xs font-semibold text-gray-900 text-center mb-0">Oracle gathers data</p>
+                    <p className="text-xs text-gray-600 mb-0">triggers strategy</p>
                   </div>
 
-                  <div className="flex flex-col items-center">
-                    
-                    
-                    
-                  </div>
+                  <div className="flex flex-col items-center"></div>
                 </div>
 
                 {/* Step 1: Euler Finance */}
-                <div className="flex items-center gap-3 w-full justify-center">
+                <div className="flex items-center gap-2 w-full justify-center">
                   <div className="flex flex-col items-center">
                     <div className="w-16 h-16 flex items-center justify-center mb-1">
                       <img src="/euler-finance-logo.png" alt="Euler Finance" className="w-12 h-12 object-contain" />
                     </div>
-                    <p className="text-xs font-semibold text-gray-900 text-center">Deposit USDC on Euler</p>
+                    <p className="text-xs font-semibold text-gray-900 text-center mb-0">Deposit USDC on Euler</p>
                     <div className="mt-1 px-2 py-0.5 bg-green-100 rounded-full">
                       <span className="text-xs font-bold text-green-700">+8.5% APY</span>
                     </div>
@@ -165,14 +161,14 @@ export default function Component() {
                         <div className="w-3 h-3 bg-white transform rotate-45"></div>
                       </div>
                     </div>
-                    <p className="text-xs font-semibold text-gray-900 text-center">Borrow WETH against USDC</p>
+                    <p className="text-xs font-semibold text-gray-900 text-center mb-0">Borrow WETH against USDC</p>
                     <div className="mt-1 px-2 py-0.5 bg-red-100 rounded-full">
                       <span className="text-xs font-bold text-red-700">-2.2% APY</span>
                     </div>
                   </div>
                 </div>
 
-                <ArrowDown className="w-4 h-4 text-black" />
+                <ArrowDown className="w-3 h-3 text-black" />
 
                 {/* Step 2: GMX */}
                 <div className="flex flex-col items-center">
@@ -180,20 +176,20 @@ export default function Component() {
                     <img src="/gmx-logo.png" alt="GMX" className="w-10 h-10 object-contain" />
                     <div className="w-4 h-4 bg-orange-400 rounded-full absolute -bottom-1 -right-1"></div>
                   </div>
-                  <p className="text-xs font-semibold text-gray-900 text-center">Long ETH to collect funding</p>
+                  <p className="text-xs font-semibold text-gray-900 text-center mb-0">Long ETH to collect funding</p>
                   <div className="mt-1 px-2 py-0.5 bg-blue-100 rounded-full">
                     <span className="text-xs font-bold text-blue-700">+15.8% APY</span>
                   </div>
                 </div>
 
-                <ArrowDown className="w-4 h-4 text-black" />
+                <ArrowDown className="w-3 h-3 text-black" />
 
                 {/* Step 3: Result */}
                 <div className="flex flex-col items-center">
-                  <div className="w-32 h-32 flex items-center justify-center mb-1">
-                    <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-32 h-32 object-contain" />
+                  <div className="w-24 h-24 flex items-center justify-center mb-1">
+                    <img src="/relaxed-penguin.png" alt="Relaxed Penguin Doctor" className="w-24 h-24 object-contain" />
                   </div>
-                  <p className="text-sm font-bold text-gray-900 text-center">Earn dual-yield all delta-neutral</p>
+                  <p className="text-sm font-bold text-gray-900 text-center mb-0">Earn dual-yield all delta-neutral</p>
                   <div className="mt-2 px-3 py-1 bg-green-200 rounded-lg">
                     <span className="text-sm font-bold text-green-800">+13.45% Net APY</span>
                   </div>
