@@ -5,23 +5,29 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, ArrowDown, DollarSign } from 'lucide-react';
 import { Input } from './components/ui/input';
 import { useState } from 'react';
-import { useAccount, useWriteContract } from 'wagmi';
-import { erc20Abi, parseUnits } from 'viem';
+import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { erc20Abi, formatUnits, parseUnits } from 'viem';
 import { CONTRACTS } from './lib/utils';
 import { toast } from 'sonner';
 
 export default function Component() {
     const [usdcAmount, setUsdcAmount] = useState('0');
     const { address } = useAccount();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<number | null>(null);
 
     // Transfer transaction
     const { writeContractAsync: transfer } = useWriteContract();
+    const { data: balance } = useReadContract({
+        abi: erc20Abi,
+        address: CONTRACTS.USDC as `0x${string}`,
+        functionName: 'balanceOf',
+        args: [address as `0x${string}`],
+    });
 
     const handleDeposit = async () => {
-        if (!address) return;
+        if (!address || Number(usdcAmount) <= 0) return;
 
-        setIsLoading(true);
+        setIsLoading(0);
 
         try {
             await transfer({
@@ -30,11 +36,33 @@ export default function Component() {
                 functionName: 'transfer',
                 args: [address as `0x${string}`, parseUnits(usdcAmount, 6)],
             });
+            toast.success('Deposit successful');
         } catch (error) {
+            toast.error('Deposit failed');
             console.error(error);
         } finally {
-            setIsLoading(false);
-            toast.success('Deposit successful');
+            setIsLoading(null);
+        }
+    };
+
+    const handleWithdraw = async () => {
+        if (!address || Number(usdcAmount) <= 0) return;
+
+        setIsLoading(1);
+
+        try {
+            await transfer({
+                abi: erc20Abi,
+                address: CONTRACTS.USDC as `0x${string}`,
+                functionName: 'transfer',
+                args: [address as `0x${string}`, parseUnits(usdcAmount, 6)],
+            });
+            toast.success('Withdraw successful');
+        } catch (error) {
+            toast.error('Withdraw failed');
+            console.error(error);
+        } finally {
+            setIsLoading(null);
         }
     };
 
@@ -65,24 +93,25 @@ export default function Component() {
                             <span className="font-semibold text-gray-900">USDC</span>
                             <Input type="number" className="flex-1" value={usdcAmount} onChange={e => setUsdcAmount(e.target.value)} />
                         </div>
+                        <p className="text-sm text-gray-600">Balance: {formatUnits(balance ?? 0n, 6)}</p>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="space-y-3 mb-6">
                         <Button
                             onClick={handleDeposit}
-                            disabled={isLoading}
+                            disabled={isLoading !== null}
                             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 text-lg font-semibold"
                         >
-                            {isLoading ? 'Depositing...' : 'Deposit'}
+                            {isLoading === 0 ? 'Depositing...' : 'Deposit'}
                         </Button>
                         <Button
-                            onClick={handleDeposit}
-                            disabled={isLoading}
+                            onClick={handleWithdraw}
+                            disabled={isLoading !== null}
                             variant="outline"
                             className="w-full py-3 text-lg font-semibold bg-transparent"
                         >
-                            {isLoading ? 'Withdrawing...' : 'Withdraw'}
+                            {isLoading === 1 ? 'Withdrawing...' : 'Withdraw'}
                         </Button>
                     </div>
 
