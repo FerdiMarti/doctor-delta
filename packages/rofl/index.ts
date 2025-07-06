@@ -7,6 +7,10 @@ import { eulerUtilsLensAbi } from './abis/UtilsLens.ts';
 
 dotenv.config();
 
+const GMC_FUNDING_RATE_DECIMALS = 32;
+const EULER_APY_DECIMALS = 25;
+const PERC_PRECISION = 5;
+
 interface OracleConfig {
     intervalSeconds: number;
     alchemyApiKey: string;
@@ -19,6 +23,8 @@ interface OracleConfig {
     gmxMarket: string;
     wethToken: string;
     usdcToken: string;
+    useLocalHardhatNode: boolean;
+    localRpcUrl?: string;
 }
 
 enum Strategy {
@@ -35,8 +41,15 @@ class BlockchainOracle {
     constructor(config: OracleConfig) {
         this.config = config;
 
-        // Initialize Ethereum provider via Alchemy
-        this.provider = new ethers.AlchemyProvider(42161, config.alchemyApiKey);
+        // Initialize Ethereum provider - use local hardhat node if flag is set, otherwise use Alchemy
+        if (config.useLocalHardhatNode) {
+            const rpcUrl = config.localRpcUrl || 'http://localhost:8545';
+            this.provider = new ethers.JsonRpcProvider(rpcUrl);
+            console.log(`🔧 Using local hardhat node at: ${rpcUrl}`);
+        } else {
+            this.provider = new ethers.AlchemyProvider(42161, config.alchemyApiKey);
+            console.log(`🔧 Using Alchemy provider for Arbitrum`);
+        }
 
         // Initialize wallet
         this.wallet = new ethers.Wallet(config.privateKey, this.provider);
@@ -69,26 +82,21 @@ class BlockchainOracle {
      */
     private analyzeData(supplyAPY: bigint, borrowAPY: bigint, fundingRate: bigint): Strategy {
         const apyDiff = supplyAPY - borrowAPY;
+        const apyDiffPercentage = Number(apyDiff / 10n ** BigInt(EULER_APY_DECIMALS - PERC_PRECISION)) / 10 ** PERC_PRECISION;
+        const normalizedFundingRate = fundingRate / 10n ** BigInt(GMC_FUNDING_RATE_DECIMALS - EULER_APY_DECIMALS);
+        const normalizedFundingRatePercentage =
+            Number(normalizedFundingRate / 10n ** BigInt(EULER_APY_DECIMALS - PERC_PRECISION)) / 10 ** PERC_PRECISION;
 
         console.log(`\nAnalyzing data:`);
-        console.log(`APY diff: ${apyDiff / 10n ** 25n}%`);
+        console.log(`APY diff: ${apyDiffPercentage}%`);
+        console.log(`Normalized funding rate: ${normalizedFundingRate}`);
+        console.log(`Normalized funding rate percentage: ${normalizedFundingRatePercentage}%`);
 
-        // // Decision logic (customize based on your strategy)
-        // if (apyDiff > 2.0 && fundingRateDiff < -0.5) {
-        //     action = 'buy';
-        //     reason = `${exchange1.name} offers significantly higher APY (${apyDiff}%) with lower funding costs`;
-        // } else if (apyDiff < -2.0 && fundingRateDiff > 0.5) {
-        //     action = 'sell';
-        //     reason = `${exchange2.name} offers significantly higher APY with ${exchange1.name} having higher funding costs`;
-        // } else if (Math.abs(apyDiff) > 1.5) {
-        //     action = Math.abs(apyDiff) > 3.0 ? 'buy' : 'hold';
-        //     reason = `Moderate APY difference (${apyDiff}%) detected`;
-        // } else {
-        //     action = 'hold';
-        //     reason = 'No significant arbitrage opportunity detected';
-        // }
-
-        return Strategy.SUPPLY;
+        if (apyDiff + normalizedFundingRate > supplyAPY) {
+            return Strategy.SUPPLY_BORROW_HEDGE;
+        } else {
+            return Strategy.SUPPLY;
+        }
     }
 
     /**
@@ -151,13 +159,13 @@ class BlockchainOracle {
             console.log(`\nDecision: ${action.toUpperCase()}`);
 
             // Execute the action on the smart contract
-            const transaction = await this.executeContractAction(action);
+            //const transaction = await this.executeContractAction(action);
 
-            if (transaction) {
-                console.log(`✅ Oracle run completed successfully`);
-            } else {
-                console.log(`ℹ️  Oracle run completed - no transaction required`);
-            }
+            // if (transaction) {
+            //     console.log(`✅ Oracle run completed successfully`);
+            // } else {
+            //     console.log(`ℹ️  Oracle run completed - no transaction required`);
+            // }
         } catch (error) {
             console.error('❌ Oracle run failed:', error);
             throw error;
@@ -196,11 +204,19 @@ const oracleConfig: OracleConfig = {
     gmxMarket: '0x70d95587d40A2caf56bd97485aB3Eec10Bee6336', //WETH/USDC
     wethToken: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', //WETH
     usdcToken: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    useLocalHardhatNode: false,
+    localRpcUrl: process.env.LOCAL_RPC_URL || 'http://localhost:8545',
 };
 
 // Validate configuration
 function validateConfig(config: OracleConfig): void {
-    const required = ['alchemyApiKey', 'contractAddress', 'privateKey'];
+    const required = ['contractAddress', 'privateKey'];
+
+    // Only require alchemyApiKey if not using local hardhat node
+    if (!config.useLocalHardhatNode) {
+        required.push('alchemyApiKey');
+    }
+
     const missing = required.filter(key => !config[key as keyof OracleConfig]);
 
     if (missing.length > 0) {
@@ -214,7 +230,7 @@ async function main(): Promise<void> {
     try {
         console.log('🔧 Initializing Doctor Delta Oracle...');
 
-        //validateConfig(oracleConfig);
+        validateConfig(oracleConfig);
 
         const oracle = new BlockchainOracle(oracleConfig);
 
