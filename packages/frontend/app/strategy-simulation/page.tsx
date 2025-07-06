@@ -11,11 +11,9 @@ export default function StrategySimulation() {
     const [ethFundingRate, setEthFundingRate] = useState(15.8);
 
     // Calculate if strategy is profitable with proper leverage
-    const supplyYield = 1.0 * usdcSupplyAPY; // 100% of deposit earns supply yield
-    const borrowCost = 0.5 * wethBorrowAPY; // Only 50% is borrowed due to collateral requirements
-    const fundingYield = 0.5 * ethFundingRate; // 50% position size for funding
-    const netAPY = supplyYield + fundingYield - borrowCost;
-    const isProfitable = netAPY > usdcSupplyAPY; // Strategy must beat simple USDC supply
+    const apyDiff = usdcSupplyAPY - wethBorrowAPY / 2;
+    const netAPY = apyDiff + ethFundingRate / 2;
+    const isProfitable = netAPY > usdcSupplyAPY;
 
     return (
         <div className="min-h-screen p-6 bg-[rgba(248,241,230,1)]">
@@ -62,13 +60,13 @@ export default function StrategySimulation() {
                             <CardContent>
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-600">-30%</span>
+                                        <span className="text-sm text-gray-600">0</span>
                                         <span className="text-2xl font-bold text-green-600">{usdcSupplyAPY.toFixed(1)}%</span>
                                         <span className="text-sm text-gray-600">30%</span>
                                     </div>
                                     <input
                                         type="range"
-                                        min="-30"
+                                        min="0"
                                         max="30"
                                         step="0.1"
                                         value={usdcSupplyAPY}
