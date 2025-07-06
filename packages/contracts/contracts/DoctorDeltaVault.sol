@@ -21,6 +21,12 @@ interface IEulerDToken {
     function balanceOf(address account) external view returns (uint256);
 }
 
+interface IEulerSwap {
+    function swap(uint256 amount0Out, uint256 amount1Out, address to, bytes calldata data) external;
+
+    function activate() external;
+}
+
 interface IGMXVault {
     function depositCollateral(address token, uint256 amount) external;
 
@@ -41,6 +47,7 @@ contract DoctorDeltaVault is ERC4626, Ownable {
     IEulerEToken public eTokenUSDC;
     IEulerDToken public dTokenWETH;
     IGMXVault public gmx;
+    IEulerSwap public eulerSwap;
 
     address public oracle;
     StrategyState public strategyState;
@@ -51,12 +58,14 @@ contract DoctorDeltaVault is ERC4626, Ownable {
         address _eTokenUSDC,
         address _dTokenWETH,
         address _gmx,
+        address _eulerSwap,
         address _oracle
     ) ERC4626(_usdc) ERC20('Doctor Delta Vault Share', 'DDVS') Ownable(msg.sender) {
         weth = IERC20(_weth);
         eTokenUSDC = IEulerEToken(_eTokenUSDC);
         dTokenWETH = IEulerDToken(_dTokenWETH);
         gmx = IGMXVault(_gmx);
+        eulerSwap = IEulerSwap(_eulerSwap);
         oracle = _oracle;
         strategyState = StrategyState.Neutral;
     }
@@ -72,6 +81,9 @@ contract DoctorDeltaVault is ERC4626, Ownable {
     }
 
     function deposit(uint256 assets, address receiver) public override returns (uint256) {
+        if (strategyState == StrategyState.Leveraged) {
+            //...
+        }
         uint256 result = super.deposit(assets, receiver);
         _afterDeposit(assets, receiver);
         return result;
@@ -85,12 +97,12 @@ contract DoctorDeltaVault is ERC4626, Ownable {
         }
     }
 
-    function _afterDeposit(uint256 assets, address /*receiver*/) internal {
+    function _afterDeposit(uint256 assets, address) internal {
         IERC20(asset()).approve(address(eTokenUSDC), assets);
-        eTokenUSDC.deposit(0, assets); // deposit to subAccount 0
+        eTokenUSDC.deposit(0, assets);
     }
 
-    function _beforeWithdraw(uint256 assets, address /*receiver*/, address owner) internal {
+    function _beforeWithdraw(uint256 assets, address, address owner) internal {
         if (strategyState == StrategyState.Neutral) {
             eTokenUSDC.withdraw(0, assets);
         } else {
@@ -102,11 +114,18 @@ contract DoctorDeltaVault is ERC4626, Ownable {
 
             gmx.closePartialPosition(address(weth), proportionBps);
 
+            uint256 wethPortion = (weth.balanceOf(address(this)) * proportionBps) / 10000;
+            weth.approve(address(eulerSwap), wethPortion);
+            eulerSwap.swap(0, wethPortion, address(this), bytes(''));
+
+            uint256 usdcBalance = IERC20(asset()).balanceOf(address(this));
+            IERC20(asset()).approve(address(eTokenUSDC), usdcBalance);
+            eTokenUSDC.deposit(0, usdcBalance);
+            eTokenUSDC.withdraw(0, assets);
+
             uint256 repayAmount = (weth.balanceOf(address(this)) * proportionBps) / 10000;
             weth.approve(address(dTokenWETH), repayAmount);
             dTokenWETH.repay(0, repayAmount);
-
-            eTokenUSDC.withdraw(0, assets);
         }
     }
 
@@ -118,9 +137,14 @@ contract DoctorDeltaVault is ERC4626, Ownable {
 
         dTokenWETH.borrow(0, wethAmount);
 
+        weth.approve(address(eulerSwap), wethAmount);
+        eulerSwap.swap(0, wethAmount, address(this), bytes(''));
+
+        uint256 usdcReceived = IERC20(asset()).balanceOf(address(this));
+
         weth.approve(address(gmx), wethAmount);
         gmx.depositCollateral(address(weth), wethAmount);
-        gmx.openLong(address(weth), wethAmount, 1);
+        gmx.openLong(address(weth), usdcReceived, 1);
 
         strategyState = StrategyState.Leveraged;
     }
@@ -129,6 +153,10 @@ contract DoctorDeltaVault is ERC4626, Ownable {
         require(strategyState == StrategyState.Leveraged, 'Already neutral');
 
         gmx.closePosition(address(weth));
+
+        uint256 usdcToSwap = IERC20(asset()).balanceOf(address(this));
+        IERC20(asset()).approve(address(eulerSwap), usdcToSwap);
+        eulerSwap.swap(usdcToSwap, 0, address(this), bytes(''));
 
         weth.approve(address(dTokenWETH), repayAmount);
         dTokenWETH.repay(0, repayAmount);
