@@ -4,10 +4,11 @@ FROM node:18-alpine AS base
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
+RUN npm install -g pnpm
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-RUN npm ci --include=dev --force
+RUN pnpm install --include=dev
 
 FROM base AS runner
 WORKDIR /app
@@ -21,7 +22,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN npm run build
+RUN pnpm run build
 
 EXPOSE 3000
-CMD HOSTNAME="0.0.0.0" npm run start
+CMD HOSTNAME="0.0.0.0" pnpm run start
