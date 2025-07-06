@@ -21,6 +21,7 @@ deployments:
     network: testnet
     paratime: sapphire
     admin: doctor_delta
+    oci_repository: rofl.sh/ba8606f9-a534-408e-bfb3-621f5b5ae3c6:1751786279
     trust_root:
       height: 27366219
       hash: a856e1ddeaed42971d0c89e8d87d329d929cae34985a1bb7cf479511d85930be
@@ -30,7 +31,9 @@ deployments:
           tcb_validity_period: 30
           min_tcb_evaluation_data_number: 18
           tdx: {}
-      enclaves: []
+      enclaves:
+        - id: jwEdTuRrsDmcQ7uCfPN/5DpE94PZWJSuF7BmhKJZkzwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: UPLsD/z2zIp7akleZaKZfzy0W6LkYdyDhfBdBY1GWHEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       endorsements:
         - any: {}
       fees: endorsing_node
@@ -40,3 +43,8 @@ deployments:
         value: pGJwa1ggCs9I+XEbVHVmlkaVfN6Fo2YE6hTaf2EkWLZQPvE5K3BkbmFtZVgbr2nwQI7GCWhAfhZ4zw2f7+Tmu59mV8cBh9dpZW5vbmNlT4QAQGF6wZ+S6I/qN69bJ2V2YWx1ZVhQ9+3Os5auMy5iuZm7OCfUATCpCXa+HPsIcR3pTjPf8zZHTcLiSVYGDcEabKgkEWcrVeqBIznnVbAAoHQCAU6+rAYo1Iztddck3Stc8OcQLb4=
       - name: ALCHEMY_API_KEY
         value: pGJwa1gg6sSVW2pxuCp3NRH6+bRwsK2/o8F5lSHz+luRAP//djZkbmFtZVgfgbACVnYw0fzVn7hCI/Uf3QCZOEC4/pcuurd+ow+SUGVub25jZU/ZrC8oWCXeH3R9tihFBwBldmFsdWVYMDyZGui8zFKIoKuE2uArWBrJMWr3bA5rULkRe3kznJrbenA7hHR+6lB/FW1WbpkKjw==
+    machines:
+      default:
+        provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
+        offer: playground_short
+        id: "0000000000000183"

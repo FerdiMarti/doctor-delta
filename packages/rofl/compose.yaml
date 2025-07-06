@@ -1,14 +1,12 @@
 services:
     oracle:
         build: .
-        image: 'hub.docker.com/repository/docker/robindevferd/doctor-delta-rofl/tags/latest/sha256-11d92736176e2190167b6eee36108fe6b7d3cb954a3af8cc96c3e9265eb17e3b'
+        image: 'docker.io/robindevferd/doctor-delta-rofl:latest'
         container_name: doctor-delta-oracle
         restart: unless-stopped
         environment:
             - NODE_ENV=production
             - ALCHEMY_API_KEY=${ALCHEMY_API_KEY}
             - PRIVATE_KEY=${PRIVATE_KEY}
-            - LOCAL_RPC_URL=${LOCAL_RPC_URL}
-            - USE_LOCAL_HARDHAT_NODE=${USE_LOCAL_HARDHAT_NODE}
-            - ORACLE_INTERVAL_SECONDS=${ORACLE_INTERVAL_SECONDS}
-            - DOCTOR_DELTA_VAULT_ADDRESS=${DOCTOR_DELTA_VAULT_ADDRESS}
+            - ORACLE_INTERVAL_SECONDS=60
+            - DOCTOR_DELTA_VAULT_ADDRESS=0xD30E6997119cb5330E927fe8109E7B580e977970
