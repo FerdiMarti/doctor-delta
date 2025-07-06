@@ -18,7 +18,7 @@ COPY packages/contracts/package.json ./packages/contracts/
 COPY packages/rofl/package.json ./packages/rofl/
 
 # Install all dependencies using the workspace
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 FROM base AS runner
 WORKDIR /app
