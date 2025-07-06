@@ -1,0 +1,34 @@
+FROM docker.io/node:18-alpine
+
+# Install system dependencies
+RUN apk add --no-cache curl jq
+RUN npm install -g pnpm
+
+# Set working directory
+WORKDIR /app
+
+# Copy workspace configuration
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml ./
+COPY package.json ./
+
+# Create package directories and copy package.json files
+RUN mkdir -p packages/frontend packages/contracts packages/rofl
+COPY packages/frontend/package.json ./packages/frontend/
+COPY packages/contracts/package.json ./packages/contracts/
+COPY packages/rofl/package.json ./packages/rofl/
+
+# Install all dependencies using the workspace
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Build the rofl application
+RUN cd packages/rofl && npm run build
+
+# Set working directory for running the app
+WORKDIR /app/packages/rofl
+
+# Start the oracle
+CMD pnpm run start
