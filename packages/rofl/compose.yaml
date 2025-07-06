@@ -1,20 +1,15 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  oracle:
-    build: .
-    container_name: doctor-delta-oracle
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - ORACLE_INTERVAL_MINUTES=${ORACLE_INTERVAL_MINUTES:-15}
-      - ALCHEMY_API_KEY=${ALCHEMY_API_KEY}
-      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS}
-      - PRIVATE_KEY=${PRIVATE_KEY}
-      - EXCHANGE1_API_URL=${EXCHANGE1_API_URL}
-      - EXCHANGE2_API_URL=${EXCHANGE2_API_URL}
-      - EXCHANGE1_CONTRACT_ADDRESS=${EXCHANGE1_CONTRACT_ADDRESS}
-      - EXCHANGE2_CONTRACT_ADDRESS=${EXCHANGE2_CONTRACT_ADDRESS}
-      - NETWORK=${NETWORK:-mainnet}
-      - GAS_LIMIT=${GAS_LIMIT:-500000}
-      - GAS_PRICE=${GAS_PRICE:-20}
+    oracle:
+        build: .
+        container_name: doctor-delta-oracle
+        restart: unless-stopped
+        environment:
+            - NODE_ENV=production
+            - ALCHEMY_API_KEY=${ALCHEMY_API_KEY}
+            - PRIVATE_KEY=${PRIVATE_KEY}
+            - LOCAL_RPC_URL=${LOCAL_RPC_URL}
+            - USE_LOCAL_HARDHAT_NODE=${USE_LOCAL_HARDHAT_NODE}
+            - ORACLE_INTERVAL_SECONDS=${ORACLE_INTERVAL_SECONDS}
+            - DOCTOR_DELTA_VAULT_ADDRESS=${DOCTOR_DELTA_VAULT_ADDRESS}

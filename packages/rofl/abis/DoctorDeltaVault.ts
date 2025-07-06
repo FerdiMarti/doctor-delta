@@ -1,5 +1,5 @@
 export const doctorDeltaAbi = {
-    address: '0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8',
+    address: '0xB4B421f001218d13e2081868A908C33f5488FAF6',
     abi: [
         {
             inputs: [
@@ -26,6 +26,11 @@ export const doctorDeltaAbi = {
                 {
                     internalType: 'address',
                     name: '_gmx',
+                    type: 'address',
+                },
+                {
+                    internalType: 'address',
+                    name: '_eulerSwap',
                     type: 'address',
                 },
                 {
@@ -551,6 +556,19 @@ export const doctorDeltaAbi = {
             outputs: [
                 {
                     internalType: 'contract IEulerEToken',
+                    name: '',
+                    type: 'address',
+                },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+        },
+        {
+            inputs: [],
+            name: 'eulerSwap',
+            outputs: [
+                {
+                    internalType: 'contract IEulerSwap',
                     name: '',
                     type: 'address',
                 },

@@ -113,7 +113,7 @@ class BlockchainOracle {
             switch (action) {
                 case Strategy.SUPPLY:
                     if (currentState == 0) return null;
-                    transaction = await this.contract.executeSupplyStrategy();
+                    transaction = await this.contract.rebalanceToNeutral();
                     break;
 
                 case Strategy.SUPPLY_BORROW_HEDGE:
@@ -159,13 +159,13 @@ class BlockchainOracle {
             console.log(`\nDecision: ${action.toUpperCase()}`);
 
             // Execute the action on the smart contract
-            //const transaction = await this.executeContractAction(action);
+            const transaction = await this.executeContractAction(action);
 
-            // if (transaction) {
-            //     console.log(`✅ Oracle run completed successfully`);
-            // } else {
-            //     console.log(`ℹ️  Oracle run completed - no transaction required`);
-            // }
+            if (transaction) {
+                console.log(`✅ Oracle run completed successfully`);
+            } else {
+                console.log(`ℹ️  Oracle run completed - no transaction required`);
+            }
         } catch (error) {
             console.error('❌ Oracle run failed:', error);
             throw error;
@@ -195,7 +195,7 @@ class BlockchainOracle {
 const oracleConfig: OracleConfig = {
     intervalSeconds: parseInt(process.env.ORACLE_INTERVAL_SECONDS || '10'),
     alchemyApiKey: process.env.ALCHEMY_API_KEY || '',
-    contractAddress: doctorDeltaAbi.address,
+    contractAddress: process.env.DOCTOR_DELTA_VAULT_ADDRESS || '',
     privateKey: process.env.PRIVATE_KEY || '',
     gmxDataStoreAddress: datastoreAbi.address,
     eulerWethVaultAddress: '0x78E3E051D32157AACD550fBB78458762d8f7edFF', //WETH
@@ -204,7 +204,7 @@ const oracleConfig: OracleConfig = {
     gmxMarket: '0x70d95587d40A2caf56bd97485aB3Eec10Bee6336', //WETH/USDC
     wethToken: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', //WETH
     usdcToken: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-    useLocalHardhatNode: false,
+    useLocalHardhatNode: process.env.USE_LOCAL_HARDHAT_NODE === 'true',
     localRpcUrl: process.env.LOCAL_RPC_URL || 'http://localhost:8545',
 };
 

@@ -11,22 +11,15 @@ async function main() {
     const [deployer] = await ethers.getSigners();
 
     // Constructor parameters
-    const constructorArgs: [string, string, string, string, string, string] = [
+    const constructorArgs: [string, string, string, string, string, string, string] = [
         USED_CONTRACTS.USDC, // _usdc
         USED_CONTRACTS.WETH, // _weth
         USED_CONTRACTS.EULER_ETOKEN_USDC, // _eTokenUSDC
         USED_CONTRACTS.EULER_DTOKEN_WETH, // _dTokenWETH
         USED_CONTRACTS.GMX_VAULT, // _gmx
+        USED_CONTRACTS.EULER_SWAP, // _eulerSwap
         USED_CONTRACTS.ORACLE, // _oracle
     ];
-
-    console.log('Constructor arguments:');
-    console.log('  USDC:', USED_CONTRACTS.USDC);
-    console.log('  WETH:', USED_CONTRACTS.WETH);
-    console.log('  Euler eToken USDC:', USED_CONTRACTS.EULER_ETOKEN_USDC);
-    console.log('  Euler dToken WETH:', USED_CONTRACTS.EULER_DTOKEN_WETH);
-    console.log('  GMX Vault:', USED_CONTRACTS.GMX_VAULT);
-    console.log('  Oracle:', USED_CONTRACTS.ORACLE);
 
     // Deploy the contract
     console.log('\nDeploying DoctorDeltaVault...');
@@ -37,14 +30,6 @@ async function main() {
 
     const vaultAddress = await doctorDeltaVault.getAddress();
     console.log('DoctorDeltaVault deployed to:', vaultAddress);
-
-    // Log deployment info
-    console.log('\n=== Deployment Summary ===');
-    console.log('Contract Name: DoctorDeltaVault');
-    console.log('Contract Address:', vaultAddress);
-    console.log('Deployer:', deployer.address);
-    console.log('Network:', await ethers.provider.getNetwork());
-    console.log('Block Number:', await ethers.provider.getBlockNumber());
 
     // Verify initial state
     console.log('\n=== Initial Contract State ===');
