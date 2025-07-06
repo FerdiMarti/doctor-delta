@@ -36,11 +36,11 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy all source files
 COPY . .
 
-# Set working directory to frontend package
-WORKDIR /app/packages/frontend
+# Build the frontend application from workspace root
+RUN pnpm --filter frontend run build
 
-# Build the frontend application
-RUN pnpm run build
+# Set working directory to frontend package for running
+WORKDIR /app/packages/frontend
 
 EXPOSE 3000
 CMD HOSTNAME="0.0.0.0" pnpm run start 
