@@ -91,7 +91,7 @@ export default function Component() {
                                 <DollarSign className="w-5 h-5 text-white" />
                             </div>
                             <span className="font-semibold text-gray-900">USDC</span>
-                            <Input type="number" className="flex-1" value={usdcAmount} onChange={e => setUsdcAmount(e.target.value)} />
+                            <Input disabled type="number" className="flex-1" value={usdcAmount} onChange={e => setUsdcAmount(e.target.value)} />
                         </div>
                         <p className="text-sm text-gray-600">Balance: {formatUnits(balance ?? 0n, 6)}</p>
                     </div>
@@ -100,14 +100,14 @@ export default function Component() {
                     <div className="space-y-3 mb-6">
                         <Button
                             onClick={handleDeposit}
-                            disabled={isLoading !== null}
+                            disabled={true || isLoading !== null}
                             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 text-lg font-semibold"
                         >
                             {isLoading === 0 ? 'Depositing...' : 'Deposit'}
                         </Button>
                         <Button
                             onClick={handleWithdraw}
-                            disabled={isLoading !== null}
+                            disabled={true || isLoading !== null}
                             variant="outline"
                             className="w-full py-3 text-lg font-semibold bg-transparent"
                         >
