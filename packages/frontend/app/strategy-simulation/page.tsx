@@ -18,32 +18,6 @@ export default function StrategySimulation() {
     return (
         <div className="min-h-screen p-6 bg-[rgba(248,241,230,1)]">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <img src="/doctor-delta-logo.png" alt="Doctor Delta Logo" className="w-20 h-20 object-contain" />
-                        <h1 className="text-4xl font-bold text-gray-900">Doctor Delta</h1>
-                    </div>
-
-                    <nav className="flex items-center gap-8">
-                        <Link href="/" className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition-colors">
-                            Home
-                        </Link>
-                        <Link href="/portfolio" className="text-lg font-semibold text-gray-700 hover:text-blue-600 transition-colors">
-                            Portfolio
-                        </Link>
-                        <Link href="/strategy-simulation" className="text-lg font-semibold text-blue-600 border-b-2 border-blue-600">
-                            Strategy Simulation
-                        </Link>
-                    </nav>
-                </div>
-
-                {/* Back Button */}
-                <Link href="/" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6">
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Vault
-                </Link>
-
                 <div className="grid lg:grid-cols-2 gap-8">
                     {/* Controls Section */}
                     <div className="space-y-6">
