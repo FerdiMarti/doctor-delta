@@ -3,6 +3,7 @@ import './globals.css';
 import { Web3Provider } from '@/components/providers/Web3Provider';
 import Link from 'next/link';
 import { ConnectButton } from '@/components/ConnectButton';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
     title: 'Doctor Delta',
@@ -45,6 +46,7 @@ export default function RootLayout({
                             {children}
                         </div>
                     </div>
+                    <Toaster />
                 </Web3Provider>
             </body>
         </html>

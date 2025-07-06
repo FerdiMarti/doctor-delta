@@ -3,13 +3,13 @@
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fallback, injected, unstable_connector, WagmiProvider } from 'wagmi';
-import { base } from 'wagmi/chains';
+import { arbitrum } from 'wagmi/chains';
 import { metaMaskWallet, phantomWallet } from '@rainbow-me/rainbowkit/wallets';
 import '@rainbow-me/rainbowkit/styles.css';
 import { ReactNode } from 'react';
 
 const config = getDefaultConfig({
-    chains: [base],
+    chains: [arbitrum],
     ssr: true,
     appName: 'Doctor Delta',
     projectId: 'NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID',
@@ -20,7 +20,7 @@ const config = getDefaultConfig({
         },
     ],
     transports: {
-        [base.id]: fallback([unstable_connector(injected)]),
+        [arbitrum.id]: fallback([unstable_connector(injected)]),
     },
 });
 
