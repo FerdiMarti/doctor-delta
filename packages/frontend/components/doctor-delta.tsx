@@ -3,11 +3,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, ArrowDown, DollarSign } from 'lucide-react';
-import { Input } from './components/ui/input';
+import { Input } from './ui/input';
 import { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { erc20Abi, formatUnits, parseUnits } from 'viem';
-import { CONTRACTS } from './lib/utils';
+import { CONTRACTS } from '../lib/utils';
 import { toast } from 'sonner';
 
 export default function Component() {
