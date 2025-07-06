@@ -1,10 +1,9 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine
 
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# Install system dependencies
+RUN apk add --no-cache libc6-compat curl wget
 RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Copy workspace configuration
@@ -12,35 +11,27 @@ COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
 COPY package.json ./
 
-# Copy package.json files from each package
+# Create package directories and copy package.json files
+RUN mkdir -p packages/frontend packages/contracts packages/rofl
 COPY packages/frontend/package.json ./packages/frontend/
 COPY packages/contracts/package.json ./packages/contracts/
 COPY packages/rofl/package.json ./packages/rofl/
 
 # Install all dependencies using the workspace
-RUN pnpm install
-
-FROM base AS runner
-WORKDIR /app
-RUN apk add --no-cache curl
-RUN apk add --no-cache wget
-RUN npm install -g pnpm
-
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Copy node_modules from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+RUN pnpm install --frozen-lockfile
 
 # Copy all source files
 COPY . .
 
-# Build the frontend application from workspace root
-RUN pnpm --filter frontend run build
+# Build the frontend application
+RUN cd packages/frontend && npm run build
 
-# Set working directory to frontend package for running
+# Set working directory for running the app
 WORKDIR /app/packages/frontend
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
 
 EXPOSE 3000
 CMD HOSTNAME="0.0.0.0" pnpm run start 
