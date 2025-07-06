@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import * as dotenv from 'dotenv';
 import { fundingFeeAmountPerSizeKey } from './utils';
 import { datastoreAbi } from './abis/datastore.ts';
-import { doctorDeltaAbi } from './abis/doctor-delta.ts';
+import { doctorDeltaAbi } from './abis/DoctorDeltaVault.ts';
 import { eulerUtilsLensAbi } from './abis/UtilsLens.ts';
 
 dotenv.config();
@@ -100,13 +100,17 @@ class BlockchainOracle {
 
             let transaction: ethers.ContractTransactionResponse;
 
+            const currentState = await this.contract.strategyState();
+
             switch (action) {
                 case Strategy.SUPPLY:
+                    if (currentState == 0) return null;
                     transaction = await this.contract.executeSupplyStrategy();
                     break;
 
                 case Strategy.SUPPLY_BORROW_HEDGE:
-                    transaction = await this.contract.executeSupplyStrategy();
+                    if (currentState == 1) return null;
+                    transaction = await this.contract.executeLeveragedStrategy();
                     break;
 
                 default:
