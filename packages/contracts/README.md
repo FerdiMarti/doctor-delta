@@ -8,24 +8,17 @@ This contract is designed for protocol-native capital, DAOs, and sophisticated u
 
 The vault operates in two states:
 
-| State       | Description                                                                 |
-|-------------|-----------------------------------------------------------------------------|
-| Neutral     | All USDC is lent on Euler to earn passive yield.                            |
-| Leveraged   | USDC is lent on Euler, WETH is borrowed, WETH is swapped to USDC via EulerSwap (to rebalance inventory), USDC is posted as collateral on GMX, and a 1x long WETH position is opened. This long position fully delta-hedges the short WETH debt. |
+| State     | Description                                                                                                                                                                                                                                     |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Neutral   | All USDC is lent on Euler to earn passive yield.                                                                                                                                                                                                |
+| Leveraged | USDC is lent on Euler, WETH is borrowed, WETH is swapped to USDC via EulerSwap (to rebalance inventory), USDC is posted as collateral on GMX, and a 1x long WETH position is opened. This long position fully delta-hedges the short WETH debt. |
 
 Transitions between states are executed by a trusted oracle contract, which reacts to market signals.
 
 ## ERC4626 Share Accounting
 
 - Follows the ERC4626 standard for vault accounting.
-- Vault shares represent a proportional claim on net assets under management (NAV).
-- `totalAssets()` is dynamically calculated based on:
-
-```
-NAV = USDC_in_Euler + USDC_in_Vault - WETH_debt_value
-```
-
-- WETH debt value is computed using a price oracle (e.g., Chainlink), ensuring share pricing remains fair even in leveraged mode.
+- Vault shares represent a proportional claim on net assets under management.
 
 ## Swapping via EulerSwap
 
@@ -33,27 +26,16 @@ All token swaps (WETH ↔ USDC) are performed using EulerSwap, a native AMM inte
 
 The swap is used to convert borrowed WETH into USDC so it can be used as collateral on GMX. It is **not** the delta hedge itself — the GMX long is what neutralizes the vault's ETH exposure.
 
-The contract uses:
-
-```
-eulerSwap.swap(
-    amount0Out, 
-    amount1Out, 
-    to, 
-    data
-)
-```
-
-to perform this asset conversion before and after strategy execution.
+The contract performs this asset conversion before and after strategy execution.
 
 ## Oracle-Controlled Functions
 
 Only the designated oracle can execute the strategy transitions:
 
-| Function                     | Description                                 |
-|-----------------------------|---------------------------------------------|
-| executeLeveragedStrategy    | Triggers delta-neutral strategy activation  |
-| rebalanceToNeutral          | Unwinds position back to passive lending    |
+| Function                 | Description                                |
+| ------------------------ | ------------------------------------------ |
+| executeLeveragedStrategy | Triggers delta-neutral strategy activation |
+| rebalanceToNeutral       | Unwinds position back to passive lending   |
 
 This separation ensures that strategy logic is offloaded to a verified controller while maintaining vault simplicity.
 
@@ -76,10 +58,10 @@ This separation ensures that strategy logic is offloaded to a verified controlle
             │
             ▼
     DoctorDeltaVault ◄──── Users
-       ▲      │
-       │      ▼
-     Euler   EulerSwap
-       ▲         ▲
+       ▲       │
+       │       ▼
+       │      EulerSwap
+       │         ▲
        │         │
      Lend      Swap
      USDC     WETH-USDC
@@ -87,13 +69,6 @@ This separation ensures that strategy logic is offloaded to a verified controlle
        │         ▼
      Euler    GMX (delta hedge)
 ```
-
-## Contract Interfaces Used
-
-- IEulerEToken – for lending USDC
-- IEulerDToken – for borrowing/repaying WETH
-- IEulerSwap – for swapping WETH ↔ USDC
-- IGMXVault – wrapper for opening/closing 1x long WETH using USDC collateral
 
 ## Deployment Checklist
 
@@ -106,13 +81,4 @@ This separation ensures that strategy logic is offloaded to a verified controlle
 
 - Add slippage protection for EulerSwap
 - Emergency pause and resume controls
-- Real-time Chainlink price oracle integration
 - Reward distribution mechanism for share holders
-
-## License
-
-MIT — open for experimentation, research, and production deployment with audit.
-
-## Questions
-
-Open an issue or reach out via official community channels.

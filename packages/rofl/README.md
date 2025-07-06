@@ -7,11 +7,13 @@ This repository contains the off-chain oracle logic for the **Doctor Delta Vault
 ## 💡 Overview
 
 The Doctor Delta Vault earns yield by:
+
 - Supplying USDC on [Euler Finance](https://www.euler.finance)
 - Borrowing ETH against it
-- Shorting ETH perpetuals on GMX
+- Longing ETH perpetuals on GMX
 
 This off-chain oracle checks:
+
 - The supply APY on Euler USDC markets
 - The ETH funding rate on GMX
 
@@ -21,103 +23,26 @@ If both metrics meet a configurable threshold, it triggers a rebalance via an on
 
 ## 🛠 How It Works
 
-1. **Schedule:** The logic runs as a scheduled Cron job (via `ROFL.cron`).
+1. **Schedule:** The logic runs Typescript code in an configurable interval.
 2. **Data Fetching:** Pulls real-time data from:
-   - [Euler subgraph](https://thegraph.com/hosted-service/subgraph/euler-xyz/euler-mainnet)
-   - [GMX API](https://gmxio.gitbook.io/gmx)
+    - Euler UtilsLens Contract
+    - GMX Datastore contract
 3. **Condition Logic:**
-   - Euler APY > 4.0%
-   - GMX funding rate > 0.01% (positive carry)
+    - Euler Supply APY - Euler Borrow APY GMX > Euler Supply APY
+    - If the condition is met, the complete startegy can be executed
+    - If not, meaning the strategy is less profitable than the simple supply APY, the oracle triggers the contract to supply USDC without borrowing and going long.
+    - Checks the condition regularly
 4. **Smart Contract Interaction:**
-   - Signs a rebalance transaction using a secure enclave key
-   - Sends `rebalance()` to the `DoctorDeltaVault` contract
+    - Signs a rebalance transaction using a secure key
+    - Sends `rebalanceToNeutral()` or `executeLeveragedStrategy()` to the `DoctorDeltaVault` contract depending on the calculated strategy and current contract status.
 
----
+Right now the logic only compares a fixed token pair and gmx pool. In the future, this can be extended to
 
-## 🧾 File Structure
+## 🚀 How to Use
 
-| File | Purpose |
-|------|---------|
-| `index.ts` | Main ROFL logic and trigger |
-| `utils.ts` | Helper functions for APY, funding rate, condition logic |
-| `DoctorDeltaVault.ts` | Contract ABI and rebalance call logic |
-| `UtilsLens.ts` | Optional additional on-chain contract lens helper |
-
----
-
-## 🔐 Security & Trust
-
-This logic is deployed via **ROFL** on **Oasis Sapphire**, ensuring:
-- **Confidentiality**: API keys and signing keys never leave the enclave
-- **Integrity**: Signed messages originate from within a trusted execution environment
-- **Automation**: No human intervention needed to monitor market conditions
-
----
-
-## 🚀 Deployment
-
-### Prerequisites
-- Node.js v18+
-- ROFL SDK
-- Oasis CLI configured
-- Environment variables for secrets (if needed)
-
-### Steps
-
-```bash
-git clone https://github.com/your-org/doctor-delta-rofl-oracle.git
-cd doctor-delta-rofl-oracle
-
-npm install
-npx rofl build
-npx rofl deploy --network sapphire
-```
-
-> Note: Ensure your TEE signer is properly configured and whitelisted on the contract if needed.
-
----
-
-## ⚙️ Configuration
-
-Edit the thresholds in `utils.ts`:
-```ts
-const APY_THRESHOLD = 0.04;
-const FUNDING_RATE_THRESHOLD = 0.0001;
-```
-
-Set contract address in `DoctorDeltaVault.ts`:
-```ts
-export const DOCTOR_DELTA_VAULT = "0xYourContractAddress";
-```
-
----
-
-## 📡 Data Sources
-
-- **Euler Subgraph:** for real-time APY data
-- **GMX Funding Rate API:** for ETH perps
-
----
-
-## 🧪 Testing
-
-The logic can be dry-run locally:
-```bash
-npx ts-node index.ts
-```
-
-To simulate rebalancing without signing:
-```ts
-rebalance(false); // mock call
-```
-
----
-
-## 📄 License
-
-MIT — © 2025 Ferdinand Martini and Vincent Weckström
-
----
+- Deploy DoctorDeltaVault contract and note down address.
+- Configure the environment variables as in config.example.env
+- Run docker container or `npm run dev`
 
 ## 👤 Maintainers
 
