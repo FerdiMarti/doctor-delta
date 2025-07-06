@@ -31,7 +31,11 @@ The off-chain oracle logic deployed via ROFL, which monitors market conditions a
 - Execution conditions
 - Usage information
 
----
+## Deployments
+
+Doctor Delta Contract on Arbitrum mainnet: 0xD30E6997119cb5330E927fe8109E7B580e977970
+ROFL application identifier (sapphire): rofl1qqrd6s84ge7ugp90mth8rdw80wxkvxrxuyqmphy2
+Address used by ROFL Oracle: 0x83bD941abD6D80FC1EA6Dd84553A3bB21B11Ad56
 
 ## 👥 Authors
 

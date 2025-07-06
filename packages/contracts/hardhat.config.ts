@@ -20,6 +20,10 @@ const config: HardhatUserConfig = {
                 interval: 3000,
             },
         },
+        arbitrum: {
+            url: 'https://arb-mainnet.g.alchemy.com/v2/' + process.env.ALCHEMY_API_KEY,
+            accounts: [process.env.PRIVATE_KEY || ''],
+        },
     },
 };
 

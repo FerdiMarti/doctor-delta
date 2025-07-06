@@ -23,8 +23,8 @@ export const CONTRACT_ADDRESSES: {
             EULER_ETOKEN_USDC: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', // Euler eUSDC on Arbitrum
             EULER_DTOKEN_WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', // Placeholder - update with actual address
             GMX_VAULT: '0x489ee077994B6658eAfA855C308275EAd8097C4A', // GMX Vault on Arbitrum
-            EULER_SWAP: '0x489ee077994B6658eAfA855C308275EAd8097C4A', // Euler Swap on Arbitrum
-            ORACLE: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', // Placeholder - update with actual oracle address
+            EULER_SWAP: '0x489ee077994B6658eAfA855C308275EAd8097C4A', // Euler Swap on Arbitrum (not accurate)
+            ORACLE: '0x83bD941abD6D80FC1EA6Dd84553A3bB21B11Ad56', // Placeholder - update with actual oracle address
         },
     },
 };

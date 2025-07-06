@@ -12,7 +12,7 @@
         "getusd": "npx hardhat get-usdc --network localhost",
         "checkusd": "npx hardhat check-usdc --network localhost",
         "deploy": "npx hardhat run scripts/deployDoctorDeltaVault.ts --network localhost",
-        "deploy:mainnet": "npx hardhat run scripts/deployDoctorDeltaVault.ts --network mainnet"
+        "deploy:mainnet": "npx hardhat run scripts/deployDoctorDeltaVault.ts --network arbitrum"
     },
     "devDependencies": {
         "@nomicfoundation/hardhat-ethers": "^3.0.8",
