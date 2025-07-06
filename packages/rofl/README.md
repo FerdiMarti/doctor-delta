@@ -43,6 +43,7 @@ Right now the logic only compares a fixed token pair and gmx pool. In the future
 - Deploy DoctorDeltaVault contract and note down address.
 - Configure the environment variables as in config.example.env
 - Run docker container or `npm run dev`
+- When deploying the ROFL container, provide secrets like ALCHEMY_API_KEY and PRIVATE_KEY via `echo -n "my very secret value" | oasis rofl secret set mysecret -`
 
 ## 👤 Maintainers
 
