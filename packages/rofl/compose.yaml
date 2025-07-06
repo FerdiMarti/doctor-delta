@@ -1,6 +1,7 @@
 services:
     oracle:
         build: .
+        image: 'hub.docker.com/repository/docker/robindevferd/doctor-delta-rofl/tags/latest/sha256-11d92736176e2190167b6eee36108fe6b7d3cb954a3af8cc96c3e9265eb17e3b'
         container_name: doctor-delta-oracle
         restart: unless-stopped
         environment:
